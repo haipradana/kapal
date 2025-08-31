@@ -18,6 +18,3 @@ Tujuan utama aplikasi ini adalah mendukung digitalisasi data pelabuhan agar lebi
 - **Ketua Kelompok**: Pradana Yahya Abdillah — `23/515259/TK/56625`  
 - **Anggota 1**: Irfan Firdaus Isyfi — `23/520128/TK/57322`  
 - **Anggota 2:**: Muhammad Khaira Rahmadya Nauval - `23/521078/TK/57466`
-
----
->>>>>>> 520128
