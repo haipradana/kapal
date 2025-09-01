@@ -6,7 +6,7 @@ Tujuan utama aplikasi ini adalah mendukung digitalisasi data pelabuhan agar lebi
 
 ---
 
-## ✨ Fitur Utama
+## Fitur Utama
 - 📋 Pendataan kapal yang berlabuh di pelabuhan  
 - 🎣 Pencatatan jumlah hasil tangkapan ikan  
 - 📊 Laporan terstruktur untuk mendukung pengambilan keputusan  
@@ -14,7 +14,7 @@ Tujuan utama aplikasi ini adalah mendukung digitalisasi data pelabuhan agar lebi
 
 ---
 
-## 👨‍👩‍👦 Anggota Kelompok
+## Anggota Kelompok
 - **Ketua Kelompok**: Pradana Yahya Abdillah — `23/515259/TK/56625`  
 - **Anggota 1**: Irfan Firdaus Isyfi — `23/520128/TK/57322`  
 - **Anggota 2:**: Muhammad Khaira Rahmadya Nauval - `23/521078/TK/57466`
