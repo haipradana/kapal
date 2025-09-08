@@ -12,12 +12,29 @@ namespace Kapal.Models
         private int _vesselId;
         private DateTime _landedAt;
         private string _notes;
-    }
 
-     public int LandingId
+        public int LandingId
         {
-            get => landingId;
-            set => landingId = value;
+            get => _landingId;
+            set => _landingId = value;
         }
+
+        public int VesselId
+        {
+            get => _vesselId;
+            set => _vesselId = value;
+        }
+
+        public DateTime LandedAt
+        {
+            get => _landedAt;
+            set => _landedAt = value;
+        }
+
+        public string Notes
+        {
+            get => _notes;
+            set => _notes = value;
         }
     }
+}
