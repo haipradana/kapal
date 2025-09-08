@@ -1,0 +1,28 @@
+# .gitignore for Visual Studio, C#, and Windows
+# Build results
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio Code
+.vscode/
+
+# Windows image file caches
+Thumbs.db
+Desktop.ini
+
+# NuGet
+*.nupkg
+# NuGet Symbol Packages
+*.snupkg
+# Build directories
+[Kk]apal/bin/
+[Kk]apal/obj/
+
+# Others
+*.log
+*.vs/
+*.DS_Store
