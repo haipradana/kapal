@@ -24,7 +24,7 @@ Tujuan utama aplikasi ini adalah mendukung digitalisasi data pelabuhan agar lebi
   <img src="image/ClassDiagram.jpg" alt="Class Diagram" width="50%"/>
 </p>
 
-## Entity Relational Diagram
+## Entity Relationship Diagram
 <p align="center">
-  <img src="image/EntityRelationalDiagram.jpg" alt="Entity Relationship Diagram" width="50%"/>
+  <img src="image/EntityRelationalDiagram.jpg" alt="Entity Relationship Diagram" width="75%"/>
 </p>
