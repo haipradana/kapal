@@ -1,50 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Kapal.Models;
 
-namespace Kapal.Models
+public class Catch
 {
-    internal class Catch
+    private int _catchId;
+    private int _landingId;
+    private string _species = "";
+    private decimal _weightKg;
+
+    public int CatchId { get => _catchId; set => _catchId = value; }
+    public int LandingId { get => _landingId; set => _landingId = value; }
+
+    public string Species
     {
-        private int _catchId;
-        private int _landingId;
-        private string _species;
-        private decimal _weightKg;
-
-        public int CatchId
+        get => _species;
+        set
         {
-            get => _catchId;
-            set => _catchId = value;
+            if (string.IsNullOrWhiteSpace(value))
+                throw new ArgumentException("Nama spesies tidak boleh kosong");
+            _species = value;
         }
+    }
 
-        public int LandingId
+    // di DB kolomnya "weight" (kg). Kita beri nama domain WeightKg agar jelas.
+    public decimal WeightKg
+    {
+        get => _weightKg;
+        set
         {
-            get => _landingId;
-            set => _landingId = value;
-        }
-
-        public string Species
-        {
-            get => _species;
-            set
-            {
-                if (string.IsNullOrWhiteSpace(value))
-                    throw new ArgumentException("Nama spesies tidak boleh kosong");
-                _species = value;
-            }
-        }
-
-        public decimal WeightKg
-        {
-            get => _weightKg;
-            set
-            {
-                if (value < 0)
-                    throw new ArgumentException("Berat tidak boleh negatif");
-                _weightKg = value;
-            }
+            if (value < 0) throw new ArgumentException("Berat tidak boleh negatif");
+            _weightKg = value;
         }
     }
 }
