@@ -1,12 +1,131 @@
 ﻿<Window x:Class="Kapal.MainWindow"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Kapal"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="KAPAL - Data Entry" Height="795" Width="1284">
+    <Grid Margin="16">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="420"/>
+            <ColumnDefinition Width="16"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
+        <!-- LEFT: Forms -->
+        <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Stretch" >
+
+            <!-- Vessel -->
+            <GroupBox Header="Vessel" Padding="12" Margin="0 0 0 12">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="Name" Grid.Row="0" Grid.Column="0" Margin="0 0 8 8" VerticalAlignment="Center"/>
+                    <TextBox x:Name="tbVesselName" Grid.Row="0" Grid.Column="1" Margin="0 0 0 8"/>
+
+                    <TextBlock Text="Reg Number" Grid.Row="1" Grid.Column="0" Margin="0 0 8 8" VerticalAlignment="Center"/>
+                    <TextBox x:Name="tbRegNumber" Grid.Row="1" Grid.Column="1" Margin="0 0 0 8"/>
+
+                    <TextBlock Text="Owner Name" Grid.Row="2" Grid.Column="0" Margin="0 0 8 8" VerticalAlignment="Center"/>
+                    <TextBox x:Name="tbOwnerName" Grid.Row="2" Grid.Column="1" Margin="0 0 0 8"/>
+
+                    <TextBlock Text="Gear" Grid.Row="3" Grid.Column="0" Margin="0 0 8 8" VerticalAlignment="Center"/>
+                    <TextBox x:Name="tbGear" Grid.Row="3" Grid.Column="1" Margin="0 0 0 8"/>
+
+                    <Button x:Name="btnSaveVessel"
+                            Grid.Row="4" Grid.ColumnSpan="2" Height="34"
+                            Content="Save Vessel"
+                            Click="btnSaveVessel_Click"/>
+                </Grid>
+            </GroupBox>
+
+            <!-- Landing -->
+            <GroupBox Header="Landing (uses last saved Vessel)" Padding="12" Margin="0 0 0 12">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="Current VesselId" Grid.Row="0" Grid.Column="0" Margin="0 0 8 8" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="lblCurrentVesselId" Grid.Row="0" Grid.Column="1" Margin="0 0 0 8" FontWeight="Bold" Text="-" />
+
+                    <TextBlock Text="Landed At (UTC)" Grid.Row="1" Grid.Column="0" Margin="0 0 8 8" VerticalAlignment="Center"/>
+                    <DatePicker x:Name="dpLandedAt" Grid.Row="1" Grid.Column="1" Margin="0 0 0 8" SelectedDate="{x:Static sys:DateTime.UtcNow}">
+
+                    </DatePicker>
+
+                    <TextBlock Text="Notes" Grid.Row="2" Grid.Column="0" Margin="0 0 8 8" VerticalAlignment="Center"/>
+                    <TextBox x:Name="tbNotes" Grid.Row="2" Grid.Column="1" Margin="0 0 0 8"/>
+
+                    <Button x:Name="btnAddLanding"
+                            Grid.Row="3" Grid.ColumnSpan="2" Height="34"
+                            Content="Add Landing"
+                            Click="btnAddLanding_Click"
+                            IsEnabled="False"/>
+                </Grid>
+            </GroupBox>
+
+            <!-- Catch -->
+            <GroupBox Header="Catch (uses last Landing)" Padding="12">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="Current LandingId" Grid.Row="0" Grid.Column="0" Margin="0 0 8 8" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="lblCurrentLandingId" Grid.Row="0" Grid.Column="1" Margin="0 0 0 8" FontWeight="Bold" Text="-" />
+
+                    <TextBlock Text="Species" Grid.Row="1" Grid.Column="0" Margin="0 0 8 8" VerticalAlignment="Center"/>
+                    <TextBox x:Name="tbSpecies" Grid.Row="1" Grid.Column="1" Margin="0 0 0 8"/>
+
+                    <TextBlock Text="Weight (kg)" Grid.Row="2" Grid.Column="0" Margin="0 0 8 8" VerticalAlignment="Center"/>
+                    <TextBox x:Name="tbWeightKg" Grid.Row="2" Grid.Column="1" Margin="0 0 0 8"/>
+
+                    <Button x:Name="btnAddCatch"
+                            Grid.Row="3" Grid.ColumnSpan="2" Height="34"
+                            Content="Add Catch"
+                            Click="btnAddCatch_Click"
+                            IsEnabled="False"/>
+                </Grid>
+            </GroupBox>
+        </StackPanel>
+
+        <!-- RIGHT: Data list -->
+        <DataGrid x:Name="dgVessels"
+                  Grid.Column="2"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  CanUserAddRows="False"
+                  ItemsSource="{Binding}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="VesselId" Binding="{Binding VesselId}" Width="100"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
+                <DataGridTextColumn Header="RegNumber" Binding="{Binding RegNumber}" Width="160"/>
+                <DataGridTextColumn Header="Owner" Binding="{Binding OwnerName}" Width="*"/>
+                <DataGridTextColumn Header="Gear" Binding="{Binding Gear}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </Window>
