@@ -50,9 +50,8 @@ MessageBoxButton.OK, MessageBoxImage.Error);
 
         private void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
-       // TODO: Implement add vessel dialog
-      MessageBox.Show("Add Vessel - To be implemented", "Info", 
-             MessageBoxButton.OK, MessageBoxImage.Information);
+            var frame = Application.Current.MainWindow.FindName("RootFrame") as Frame;
+            frame?.Navigate(new AddVesselPage(_state));
         }
 
         private void BtnEdit_Click(object sender, RoutedEventArgs e)
