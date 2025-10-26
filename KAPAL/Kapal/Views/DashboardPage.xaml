@@ -1,0 +1,100 @@
+<Page x:Class="Kapal.Views.DashboardPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:oxy="http://oxyplot.org/wpf"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      Title="Dashboard"
+      Background="#F8FAFC">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="32,24,32,32">
+     
+        <!-- Header -->
+     <TextBlock Text="Dashboard" FontSize="32" FontWeight="Bold" Foreground="#0F172A" Margin="0,0,0,8"/>
+        <TextBlock Text="Selamat datang di sistem katalog pelabuhan" FontSize="14" Foreground="#64748B" Margin="0,0,0,32"/>
+
+    <!-- ========== SUMMARY CARDS (3 kolom) ========== -->
+   <TextBlock Text="Overview" FontSize="18" FontWeight="SemiBold" Foreground="#1E293B" Margin="0,0,0,16"/>
+ <UniformGrid Columns="3" Margin="0,0,0,32">
+     <!-- Total Vessel -->
+  <Border CornerRadius="12" Background="White" Padding="20" Margin="0,0,16,0" 
+    BorderBrush="#E2E8F0" BorderThickness="1">
+     <StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+          <Border Background="#DBEAFE" CornerRadius="8" Padding="10" Margin="0,0,12,0">
+    <materialDesign:PackIcon Kind="Ferry" Width="28" Height="28" Foreground="#3B82F6"/>
+   </Border>
+   <StackPanel VerticalAlignment="Center">
+   <TextBlock Text="Total Vessel" FontSize="12" Foreground="#64748B"/>
+     <TextBlock x:Name="txtTotalVessel" Text="0" FontSize="28" FontWeight="Bold" Foreground="#0F172A"/>
+     </StackPanel>
+       </StackPanel>
+    </StackPanel>
+       </Border>
+
+    <!-- Total Landing -->
+     <Border CornerRadius="12" Background="White" Padding="20" Margin="0,0,16,0" 
+     BorderBrush="#E2E8F0" BorderThickness="1">
+ <StackPanel>
+       <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+     <Border Background="#E0F2F1" CornerRadius="8" Padding="10" Margin="0,0,12,0">
+  <materialDesign:PackIcon Kind="Anchor" Width="28" Height="28" Foreground="#10B981"/>
+    </Border>
+  <StackPanel VerticalAlignment="Center">
+   <TextBlock Text="Total Landing" FontSize="12" Foreground="#64748B"/>
+           <TextBlock x:Name="txtTotalLanding" Text="0" FontSize="28" FontWeight="Bold" Foreground="#0F172A"/>
+      </StackPanel>
+       </StackPanel>
+     </StackPanel>
+            </Border>
+
+              <!-- Total Species -->
+   <Border CornerRadius="12" Background="White" Padding="20" 
+   BorderBrush="#E2E8F0" BorderThickness="1">
+  <StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+    <Border Background="#FFF4E6" CornerRadius="8" Padding="10" Margin="0,0,12,0">
+<materialDesign:PackIcon Kind="Fish" Width="28" Height="28" Foreground="#F59E0B"/>
+            </Border>
+        <StackPanel VerticalAlignment="Center">
+    <TextBlock Text="Total Species" FontSize="12" Foreground="#64748B"/>
+   <TextBlock x:Name="txtTotalSpecies" Text="0" FontSize="28" FontWeight="Bold" Foreground="#0F172A"/>
+   </StackPanel>
+ </StackPanel>
+       </StackPanel>
+     </Border>
+            </UniformGrid>
+
+       <!-- ========== ANALYTICS CHARTS (3 kolom) ========== -->
+       <TextBlock Text="Analytics" FontSize="18" FontWeight="SemiBold" Foreground="#1E293B" Margin="0,0,0,16"/>
+         <UniformGrid Columns="3" Margin="0,0,0,24">
+  <!-- Card 1: Pie Species by Weight -->
+          <Border CornerRadius="12" Background="White" Padding="20" Margin="0,0,16,0" 
+        BorderBrush="#E2E8F0" BorderThickness="1">
+          <StackPanel>
+      <TextBlock Text="Top Species by Total Weight" FontWeight="SemiBold" FontSize="14" Foreground="#1E293B" Margin="0,0,0,12"/>
+  <oxy:PlotView x:Name="PlotSpeciesPie" Height="240"/>
+   </StackPanel>
+       </Border>
+
+     <!-- Card 2: Column Vessel by Gear -->
+   <Border CornerRadius="12" Background="White" Padding="20" Margin="0,0,16,0"
+   BorderBrush="#E2E8F0" BorderThickness="1">
+        <StackPanel>
+      <TextBlock Text="Vessel Count by Gear" FontWeight="SemiBold" FontSize="14" Foreground="#1E293B" Margin="0,0,0,12"/>
+    <oxy:PlotView x:Name="PlotVesselByGear" Height="240"/>
+   </StackPanel>
+  </Border>
+
+      <!-- Card 3: Line Landings (Last 14 Days) -->
+        <Border CornerRadius="12" Background="White" Padding="20"
+         BorderBrush="#E2E8F0" BorderThickness="1">
+        <StackPanel>
+ <TextBlock Text="Landings per Day (Last 14 days)" FontWeight="SemiBold" FontSize="14" Foreground="#1E293B" Margin="0,0,0,12"/>
+          <oxy:PlotView x:Name="PlotLandingsTrend" Height="240"/>
+       </StackPanel>
+      </Border>
+       </UniformGrid>
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>

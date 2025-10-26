@@ -1,12 +1,108 @@
 ﻿<Window x:Class="Kapal.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="KAPAL" Height="800" Width="1280">
-    <DockPanel>
-        <Border DockPanel.Dock="Top" Padding="12" Background="#0F172A">
-            <TextBlock Text="KAPAL – Data Entry" Foreground="White" FontSize="18" FontWeight="Bold"/>
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="KAPAL - Katalog Pelabuhan" Height="800" Width="1400"
+        WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="260"/>
+  <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+  <!-- ========== SIDEBAR ========== -->
+   <Border Grid.Column="0" Background="#FAFBFC" BorderBrush="#E5E7EB" BorderThickness="0,0,1,0">
+            <DockPanel>
+ <!-- Logo / Header -->
+            <Border DockPanel.Dock="Top" Padding="20,24">
+<Border.Background>
+         <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#FFE5E7" Offset="0"/>
+       <GradientStop Color="#E0F2FE" Offset="1"/>
+    </LinearGradientBrush>
+   </Border.Background>
+        <StackPanel>
+          <TextBlock Text="🚢 KAPAL" FontSize="24" FontWeight="Bold" Foreground="#0F172A" FontFamily="Segoe UI Emoji"/>
+            <TextBlock Text="Katalog Pelabuhan" FontSize="12" Foreground="#64748B" Margin="0,4,0,0"/>
+         </StackPanel>
+ </Border>
+
+         <!-- Navigation Menu -->
+      <ScrollViewer VerticalScrollBarVisibility="Auto" DockPanel.Dock="Top">
+  <StackPanel Margin="0,20,0,0" Height="355">
+        <!-- Dashboard -->
+          <Button x:Name="btnNavDashboard" Click="BtnNavDashboard_Click"
+    Margin="12,0,12,8" Padding="16,12" HorizontalContentAlignment="Left"
+       BorderThickness="0" Background="Transparent" Foreground="#475569" Cursor="Hand" Height="58">
+        <StackPanel Orientation="Horizontal">
+         <Border Background="#DBEAFE" CornerRadius="6" Padding="6" Margin="0,0,12,0">
+        <materialDesign:PackIcon Kind="ViewDashboard" Width="20" Height="20" Foreground="#3B82F6"/>
         </Border>
-        <!-- Semua halaman ngebuka di sini -->
-        <Frame x:Name="RootFrame" NavigationUIVisibility="Hidden"/>
-    </DockPanel>
+       <TextBlock Text="Dashboard" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"/>
+           </StackPanel>
+             </Button>
+
+       <!-- Input New -->
+    <Button x:Name="btnNavInputNew" Click="BtnNavInputNew_Click"
+      Margin="12,0,12,8" Padding="16,12" HorizontalContentAlignment="Left"
+ BorderThickness="0" Background="Transparent" Foreground="#475569" Cursor="Hand" Height="56">
+ <StackPanel Orientation="Horizontal">
+     <Border Background="#D1FAE5" CornerRadius="6" Padding="6" Margin="0,0,12,0">
+  <materialDesign:PackIcon Kind="PlusCircle" Width="20" Height="20" Foreground="#10B981"/>
+      </Border>
+            <TextBlock Text="Input New" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"/>
+         </StackPanel>
+         </Button>
+
+            <!-- Data Vessel -->
+    <Button x:Name="btnNavVessel" Click="BtnNavVessel_Click"
+           Margin="12,0,12,8" Padding="16,12" HorizontalContentAlignment="Left"
+           BorderThickness="0" Background="Transparent" Foreground="#475569" Cursor="Hand" Height="59">
+     <StackPanel Orientation="Horizontal">
+           <Border Background="#FFF4E6" CornerRadius="6" Padding="6" Margin="0,0,12,0">
+           <materialDesign:PackIcon Kind="Ferry" Width="20" Height="20" Foreground="#F59E0B"/>
+             </Border>
+       <TextBlock Text="Data Vessel" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"/>
+</StackPanel>
+       </Button>
+
+   <!-- Data Landing -->
+   <Button x:Name="btnNavLanding" Click="BtnNavLanding_Click"
+      Margin="12,0,12,8" Padding="16,12" HorizontalContentAlignment="Left"
+           BorderThickness="0" Background="Transparent" Foreground="#475569" Cursor="Hand" Height="59">
+    <StackPanel Orientation="Horizontal">
+            <Border Background="#F3E5F5" CornerRadius="6" Padding="6" Margin="0,0,12,0">
+  <materialDesign:PackIcon Kind="Anchor" Width="20" Height="20" Foreground="#8B5CF6"/>
+         </Border>
+               <TextBlock Text="Data Landing" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"/>
+        </StackPanel>
+     </Button>
+
+    <!-- Data Catch -->
+ <Button x:Name="btnNavCatch" Click="BtnNavCatch_Click"
+   Margin="12,0,12,8" Padding="16,12" HorizontalContentAlignment="Left"
+           BorderThickness="0" Background="Transparent" Foreground="#475569" Cursor="Hand" Height="57">
+           <StackPanel Orientation="Horizontal">
+      <Border Background="#FFF9C4" CornerRadius="6" Padding="6" Margin="0,0,12,0">
+       <materialDesign:PackIcon Kind="Fish" Width="20" Height="20" Foreground="#EC4899"/>
+         </Border>
+         <TextBlock Text="Data Catch" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"/>
+              </StackPanel>
+     </Button>
+                 </StackPanel>
+        </ScrollViewer>
+
+             <!-- Footer -->
+            <Border DockPanel.Dock="Bottom" Padding="20,16" Background="#F1F5F9">
+ <StackPanel>
+         <TextBlock Text="KAPAL v1.0" FontSize="10" Foreground="#64748B" HorizontalAlignment="Center"/>
+               <TextBlock Text="© 2025" FontSize="9" Foreground="#94A3B8" HorizontalAlignment="Center" Margin="0,2,0,0"/>
+  </StackPanel>
+     </Border>
+   </DockPanel>
+        </Border>
+
+        <!-- ========== CONTENT AREA ========== -->
+        <Frame x:Name="RootFrame" Grid.Column="1" NavigationUIVisibility="Hidden" Background="#F8FAFC"/>
+    </Grid>
 </Window>

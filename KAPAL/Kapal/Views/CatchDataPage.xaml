@@ -1,0 +1,46 @@
+<Page x:Class="Kapal.Views.CatchDataPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Data Catch"
+      Background="#F8FAFC">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="32,24,32,32">
+      
+    <!-- Header -->
+        <TextBlock Text="Data Catch" FontSize="32" FontWeight="Bold" Foreground="#0F172A" Margin="0,0,0,8"/>
+      <TextBlock Text="View all catch records with vessel and species information" FontSize="14" Foreground="#64748B" Margin="0,0,0,32"/>
+
+      <!-- Content -->
+            <Border CornerRadius="12" Background="White" Padding="24" BorderBrush="#E2E8F0" BorderThickness="1">
+        <StackPanel>
+   <DockPanel Margin="0,0,0,16" Height="52">
+          <Button Click="BtnRefresh_Click" DockPanel.Dock="Right"
+        Style="{StaticResource SecondaryButtonStyle}" Height="43">
+    <StackPanel Orientation="Horizontal">
+        <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0,0,8,0" Height="16"/>
+        <TextBlock Text="Refresh"/>
+    </StackPanel>
+</Button>
+              <TextBlock Text="Catch List" FontSize="18" FontWeight="SemiBold" Foreground="#1E293B" VerticalAlignment="Center"/>
+               </DockPanel>
+    
+
+     <!-- DataGrid -->
+          <DataGrid x:Name="dgCatches" Height="550" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False"
+  SelectionMode="Single"
+        HeadersVisibility="Column" GridLinesVisibility="None" Background="White"
+    RowBackground="White" AlternatingRowBackground="#F9FAFB"
+  BorderBrush="#E2E8F0" BorderThickness="1">
+           <DataGrid.Columns>
+ <DataGridTextColumn Header="Catch ID" Binding="{Binding CatchId}" Width="100"/>
+<DataGridTextColumn Header="Vessel Name" Binding="{Binding VesselName}" Width="*"/>
+  <DataGridTextColumn Header="Species" Binding="{Binding Species}" Width="*"/>
+         <DataGridTextColumn Header="Weight (kg)" Binding="{Binding WeightKg, StringFormat=N2}" Width="120"/>
+  </DataGrid.Columns>
+      </DataGrid>
+              </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>

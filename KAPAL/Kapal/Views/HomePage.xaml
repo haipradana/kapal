@@ -5,7 +5,7 @@
       Title="Home"
       Background="#F7FAFC">
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-        <StackPanel Margin="0,0,0,20">
+        <StackPanel Margin="0,0,0,20" Width="731">
 
             <!-- ========== HERO ========== -->
             <Grid Height="220" Margin="0 0 0 16">

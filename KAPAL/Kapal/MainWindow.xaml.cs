@@ -37,13 +37,39 @@ namespace Kapal
                 State.LandingRepo = new LandingRepository(State.Client);
                 State.CatchRepo = new CatchRepository(State.Client);
 
-                RootFrame.Navigate(new Views.HomePage(State, RootFrame));
+                // Navigate to Dashboard by default
+                RootFrame.Navigate(new Views.DashboardPage(State));
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Init error: {ex.Message}", "Error",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void BtnNavDashboard_Click(object sender, RoutedEventArgs e)
+        {
+            RootFrame.Navigate(new Views.DashboardPage(State));
+        }
+
+        private void BtnNavInputNew_Click(object sender, RoutedEventArgs e)
+        {
+            RootFrame.Navigate(new Views.InputNewPage(State));
+        }
+
+        private void BtnNavVessel_Click(object sender, RoutedEventArgs e)
+        {
+            RootFrame.Navigate(new Views.VesselDataPage(State));
+        }
+
+        private void BtnNavLanding_Click(object sender, RoutedEventArgs e)
+        {
+            RootFrame.Navigate(new Views.LandingDataPage(State));
+        }
+
+        private void BtnNavCatch_Click(object sender, RoutedEventArgs e)
+        {
+            RootFrame.Navigate(new Views.CatchDataPage(State));
         }
     }
 }
