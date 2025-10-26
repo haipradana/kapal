@@ -11,16 +11,14 @@ namespace Kapal.Views
     public partial class AddCatchPage : Page
     {
         private readonly AppState _state;
-        private readonly Frame _root;
 
         // list sementara sebelum di-Save
         private readonly ObservableCollection<CatchRow> _rows = new();
 
-        public AddCatchPage(AppState state, Frame root)
+        public AddCatchPage(AppState state)
         {
             InitializeComponent();
             _state = state;
-            _root = root;
 
             Loaded += (_, __) =>
             {
@@ -34,7 +32,13 @@ namespace Kapal.Views
         }
 
         private void BtnBack_Click(object sender, RoutedEventArgs e)
-            => _root.Navigate(new HomePage(_state, _root));
+        {
+            var frame = Application.Current.MainWindow.FindName("RootFrame") as Frame;
+            if (frame != null && frame.CanGoBack)
+            {
+                frame.GoBack();
+            }
+        }
 
         private void BtnClear_Click(object sender, RoutedEventArgs e)
         {
@@ -111,7 +115,8 @@ namespace Kapal.Views
                 Renumber();
 
                 // balik ke Home
-                _root.Navigate(new HomePage(_state, _root));
+                var frame = Application.Current.MainWindow.FindName("RootFrame") as Frame;
+                frame?.Navigate(new InputNewPage(_state));
             }
             catch (Exception ex)
             {
@@ -131,7 +136,7 @@ namespace Kapal.Views
     public class CatchRow
     {
         public int No { get; set; }
-        public string Species { get; set; }
+        public required string Species { get; set; }
         public decimal WeightKg { get; set; }
     }
 }

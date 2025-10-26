@@ -10,7 +10,7 @@ public class Catch
     public int CatchId { get => _catchId; set => _catchId = value; }
     public int LandingId { get => _landingId; set => _landingId = value; }
 
-    public string Species
+    public required string Species
     {
         get => _species;
         set

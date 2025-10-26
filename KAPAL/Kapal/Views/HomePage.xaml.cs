@@ -152,18 +152,29 @@ namespace Kapal.Views
         }
 
         private void BtnAddVessel_Click(object sender, RoutedEventArgs e)
-            => _root.Navigate(new AddVesselPage(_state, _root));
+            => _root.Navigate(new AddVesselPage(_state));
 
         private void BtnAddLanding_Click(object sender, RoutedEventArgs e)
         {
             if (_state.SelectedVessel == null) return;
-            _root.Navigate(new AddLandingPage(_state, _root));
+            _root.Navigate(new AddLandingPage(_state));
         }
 
         private void BtnAddCatch_Click(object sender, RoutedEventArgs e)
         {
-            if (_state.SelectedVessel == null) return;
-            _root.Navigate(new AddCatchPage(_state, _root));
+            if (_state.SelectedLanding == null)
+            {
+                MessageBox.Show("Pilih landing terlebih dahulu.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            };
+            
+            var frame = Application.Current.MainWindow.FindName("RootFrame") as Frame;
+            if (frame != null)
+            {
+                // Assuming AddCatchPage exists and follows the new pattern
+                // frame.Navigate(new AddCatchPage(_state));
+                MessageBox.Show("Fitur Tambah Catch belum diimplementasikan sepenuhnya.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
     }
 }

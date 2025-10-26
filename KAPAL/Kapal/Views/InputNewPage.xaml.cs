@@ -52,16 +52,45 @@ namespace Kapal.Views
 
   private void BtnAddVessel_Click(object sender, RoutedEventArgs e)
 {
-     // TODO: Open Add Vessel dialog or navigate to add vessel page
-     MessageBox.Show("Add Vessel feature - To be implemented", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+    var frame = Application.Current.MainWindow.FindName("RootFrame") as Frame;
+    if (frame != null)
+    {
+        frame.Navigate(new AddVesselPage(_state));
+    }
 }
 
         private void BtnAddLanding_Click(object sender, RoutedEventArgs e)
         {
   if (_state.SelectedVessel == null) return;
-      // TODO: Open Add Landing dialog or navigate to add landing page
-      MessageBox.Show($"Add Landing for Vessel: {_state.SelectedVessel.Name}\nTo be implemented", 
-    "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+    var frame = Application.Current.MainWindow.FindName("RootFrame") as Frame;
+    if (frame != null)
+    {
+        frame.Navigate(new AddLandingPage(_state));
+    }
+        }
+
+        private async void BtnRemoveVessel_Click(object sender, RoutedEventArgs e)
+        {
+            if (_state.SelectedVessel == null)
+            {
+                MessageBox.Show("Pilih vessel yang ingin dihapus.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var result = MessageBox.Show($"Anda yakin ingin menghapus vessel '{_state.SelectedVessel.Name}'?", "Konfirmasi Hapus", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            if (result == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    await _state.VesselRepo.DeleteAsync(_state.SelectedVessel.VesselId);
+                    MessageBox.Show("Vessel berhasil dihapus.", "Sukses", MessageBoxButton.OK, MessageBoxImage.Information);
+                    await LoadAsync(); // Refresh list
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Gagal menghapus vessel: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
 
         private void tbSearch_TextChanged(object sender, TextChangedEventArgs e)

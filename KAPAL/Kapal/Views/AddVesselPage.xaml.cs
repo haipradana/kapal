@@ -7,17 +7,21 @@ namespace Kapal.Views
     public partial class AddVesselPage : Page
     {
         private readonly AppState _state;
-        private readonly Frame _root;
 
-        public AddVesselPage(AppState state, Frame root)
+        public AddVesselPage(AppState state)
         {
             InitializeComponent();
             _state = state;
-            _root = root;
         }
 
         private void BtnBack_Click(object sender, RoutedEventArgs e)
-            => _root.Navigate(new HomePage(_state, _root));
+        {
+            var frame = Application.Current.MainWindow.FindName("RootFrame") as Frame;
+            if (frame != null && frame.CanGoBack)
+            {
+                frame.GoBack();
+            }
+        }
 
         private async void BtnSaveNext_Click(object sender, RoutedEventArgs e)
         {
@@ -38,12 +42,18 @@ namespace Kapal.Views
             {
                 var saved = await _state.VesselRepo.InsertAsync(v);
                 _state.SelectedVessel = saved;
-                MessageBox.Show("Vessel tersimpan.");
-                _root.Navigate(new AddLandingPage(_state, _root));
+                MessageBox.Show("Vessel berhasil disimpan.", "Sukses", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                var frame = Application.Current.MainWindow.FindName("RootFrame") as Frame;
+                if (frame != null)
+                {
+                    // Ganti halaman saat ini dengan halaman AddLandingPage
+                    frame.Navigate(new AddLandingPage(_state));
+                }
             }
             catch (System.Exception ex)
             {
-                MessageBox.Show($"Gagal simpan vessel: {ex.Message}");
+                MessageBox.Show($"Gagal menyimpan vessel: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

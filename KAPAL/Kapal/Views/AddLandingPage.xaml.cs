@@ -8,13 +8,11 @@ namespace Kapal.Views
     public partial class AddLandingPage : Page
     {
         private readonly AppState _state;
-        private readonly Frame _root;
 
-        public AddLandingPage(AppState state, Frame root)
+        public AddLandingPage(AppState state)
         {
             InitializeComponent();
             _state = state;
-            _root = root;
 
             Loaded += (_, __) =>
             {
@@ -26,7 +24,13 @@ namespace Kapal.Views
         }
 
         private void BtnBack_Click(object sender, RoutedEventArgs e)
-            => _root.Navigate(new HomePage(_state, _root));
+        {
+            var frame = Application.Current.MainWindow.FindName("RootFrame") as Frame;
+            if (frame != null && frame.CanGoBack)
+            {
+                frame.GoBack();
+            }
+        }
 
         private async void BtnSaveNext_Click(object sender, RoutedEventArgs e)
         {
@@ -47,12 +51,17 @@ namespace Kapal.Views
             {
                 var saved = await _state.LandingRepo.InsertAsync(landing);
                 _state.SelectedLanding = saved;
-                MessageBox.Show("Landing tersimpan.");
-                _root.Navigate(new AddCatchPage(_state, _root));
+                MessageBox.Show("Landing berhasil disimpan.", "Sukses", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                var frame = Application.Current.MainWindow.FindName("RootFrame") as Frame;
+                if (frame != null)
+                {
+                    frame.Navigate(new AddCatchPage(_state)); 
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Gagal simpan landing: {ex.Message}");
+                MessageBox.Show($"Gagal menyimpan landing: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }
