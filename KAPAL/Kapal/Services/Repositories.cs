@@ -1,103 +1,161 @@
-﻿using Kapal.Entities;
+﻿// Services/Repositories.cs
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+using Kapal.Entities;
 using Kapal.Models;
+
 using Supabase;
+using SupabasePostgrest = Supabase.Postgrest; // optional, kalau mau dipakai
 using SupabaseClient = Supabase.Client;
-using SupabasePostgrestClient = Supabase.Postgrest.Client;
-using static Supabase.Postgrest.Constants;
+using static Supabase.Postgrest.Constants;     // untuk Ordering, Operator
 
-
-
-namespace Kapal.Services;
-
-public class VesselRepository
+namespace Kapal.Services
 {
-    private readonly SupabaseClient _client;
-    public VesselRepository(SupabaseClient client) => _client = client;
-
-    private static Vessel Map(VesselEntity e) => new()
+    public class VesselRepository
     {
-        VesselId = e.VesselId,
-        Name = e.Name,
-        RegNumber = e.RegNumber,
-        OwnerName = e.OwnerName ?? "",
-        Gear = e.Gear ?? ""
-    };
+        private readonly SupabaseClient _client;
+        public VesselRepository(SupabaseClient client) => _client = client;
 
-    private static VesselEntity Map(Vessel d) => new()
-    {
-        VesselId = d.VesselId,
-        Name = d.Name,
-        RegNumber = d.RegNumber,
-        OwnerName = string.IsNullOrWhiteSpace(d.OwnerName) ? null : d.OwnerName,
-        Gear = string.IsNullOrWhiteSpace(d.Gear) ? null : d.Gear
-    };
+        private static Vessel Map(VesselEntity e) => new()
+        {
+            VesselId = e.VesselId,
+            Name = e.Name,
+            RegNumber = e.RegNumber,
+            OwnerName = e.OwnerName ?? "",
+            Gear = e.Gear ?? ""
+        };
 
-    public async Task<List<Vessel>> GetAllAsync()
-    {
-        var res = await _client.From<VesselEntity>().Order(v => v.VesselId, Ordering.Ascending).Get();
-        return res.Models.Select(Map).ToList();
+        private static VesselEntity Map(Vessel d) => new()
+        {
+            VesselId = d.VesselId,
+            Name = d.Name,
+            RegNumber = d.RegNumber,
+            OwnerName = string.IsNullOrWhiteSpace(d.OwnerName) ? null : d.OwnerName,
+            Gear = string.IsNullOrWhiteSpace(d.Gear) ? null : d.Gear
+        };
+
+        public async Task<List<Vessel>> GetAllAsync()
+        {
+            var res = await _client
+                .From<VesselEntity>()
+                .Order(v => v.VesselId, Ordering.Ascending)
+                .Get();
+
+            return res.Models.Select(Map).ToList();
+        }
+
+        public async Task<Vessel> InsertAsync(Vessel vessel)
+        {
+            var inserted = await _client.From<VesselEntity>().Insert(Map(vessel));
+            return Map(inserted.Models.First());
+        }
+
+        public async Task UpdateAsync(Vessel vessel) =>
+            await _client.From<VesselEntity>().Update(Map(vessel));
+
+        public async Task DeleteAsync(int vesselId) =>
+            await _client.From<VesselEntity>().Where(v => v.VesselId == vesselId).Delete();
     }
 
-    public async Task<Vessel> InsertAsync(Vessel vessel)
+    public class LandingRepository
     {
-        var inserted = await _client.From<VesselEntity>().Insert(Map(vessel));
-        return Map(inserted.Models.First());
+        private readonly SupabaseClient _client;
+        public LandingRepository(SupabaseClient client) => _client = client;
+
+        private static Landing Map(LandingEntity e) => new()
+        {
+            LandingId = e.LandingId,
+            VesselId = e.VesselId,
+            LandedAt = e.LandedAt,
+            Notes = e.Notes ?? ""
+        };
+
+        private static LandingEntity Map(Landing d) => new()
+        {
+            LandingId = d.LandingId,
+            VesselId = d.VesselId,
+            LandedAt = d.LandedAt,
+            Notes = string.IsNullOrWhiteSpace(d.Notes) ? null : d.Notes
+        };
+
+        // >>> Tambahan untuk analitik
+        public async Task<List<Landing>> GetAllAsync()
+        {
+            var res = await _client
+                .From<LandingEntity>()
+                .Order(l => l.LandedAt, Ordering.Descending)
+                .Get();
+
+            return res.Models.Select(Map).ToList();
+        }
+
+        public async Task<List<Landing>> GetByVesselAsync(int vesselId)
+        {
+            var res = await _client
+                .From<LandingEntity>()
+                .Filter("vessel_id", Operator.Equals, vesselId)
+                .Order(l => l.LandedAt, Ordering.Descending)
+                .Get();
+
+            return res.Models.Select(Map).ToList();
+        }
+
+        public async Task<Landing> InsertAsync(Landing landing)
+        {
+            var inserted = await _client.From<LandingEntity>().Insert(Map(landing));
+            return Map(inserted.Models.First());
+        }
     }
 
-    public async Task UpdateAsync(Vessel vessel) =>
-        await _client.From<VesselEntity>().Update(Map(vessel));
-
-    public async Task DeleteAsync(int vesselId) =>
-        await _client.From<VesselEntity>().Where(v => v.VesselId == vesselId).Delete();
-}
-
-public class LandingRepository
-{
-    private readonly SupabaseClient _client;
-    public LandingRepository(SupabaseClient client) => _client = client;
-
-    private static Landing Map(LandingEntity e) => new()
-    { LandingId = e.LandingId, VesselId = e.VesselId, LandedAt = e.LandedAt, Notes = e.Notes ?? "" };
-
-    private static LandingEntity Map(Landing d) => new()
-    { LandingId = d.LandingId, VesselId = d.VesselId, LandedAt = d.LandedAt, Notes = string.IsNullOrWhiteSpace(d.Notes) ? null : d.Notes };
-
-    public async Task<List<Landing>> GetByVesselAsync(int vesselId)
+    public class CatchRepository
     {
-        var res = await _client.From<LandingEntity>()
-            .Filter("vessel_id", Operator.Equals, vesselId)
-            .Order(l => l.LandedAt, Ordering.Descending)
-            .Get();
-        return res.Models.Select(Map).ToList();
-    }
+        private readonly SupabaseClient _client;
+        public CatchRepository(SupabaseClient client) => _client = client;
 
-    public async Task<Landing> InsertAsync(Landing landing)
-    {
-        var inserted = await _client.From<LandingEntity>().Insert(Map(landing));
-        return Map(inserted.Models.First());
-    }
-}
+        private static Models.Catch Map(CatchEntity e) => new()
+        {
+            CatchId = e.CatchId,
+            LandingId = e.LandingId,
+            Species = e.Species,
+            WeightKg = e.Weight     // Entity pakai 'Weight', Model pakai 'WeightKg'
+        };
 
-public class CatchRepository
-{
-    private readonly SupabaseClient _client;
-    public CatchRepository(SupabaseClient client) => _client = client;
+        private static CatchEntity Map(Models.Catch d) => new()
+        {
+            CatchId = d.CatchId,
+            LandingId = d.LandingId,
+            Species = d.Species,
+            Weight = d.WeightKg
+        };
 
-    private static Models.Catch Map(CatchEntity e) => new()
-    { CatchId = e.CatchId, LandingId = e.LandingId, Species = e.Species, WeightKg = e.Weight };
+        // >>> Tambahan untuk analitik
+        public async Task<List<Models.Catch>> GetAllAsync()
+        {
+            var res = await _client
+                .From<CatchEntity>()
+                .Select("*")
+                .Get();
 
-    private static CatchEntity Map(Models.Catch d) => new()
-    { CatchId = d.CatchId, LandingId = d.LandingId, Species = d.Species, Weight = d.WeightKg };
+            return res.Models.Select(Map).ToList();
+        }
 
-    public async Task<List<Models.Catch>> GetByLandingAsync(int landingId)
-    {
-        var res = await _client.From<CatchEntity>().Filter("landing_id", Operator.Equals, landingId).Get();
-        return res.Models.Select(Map).ToList();
-    }
+        public async Task<List<Models.Catch>> GetByLandingAsync(int landingId)
+        {
+            var res = await _client
+                .From<CatchEntity>()
+                .Filter("landing_id", Operator.Equals, landingId)
+                .Get();
 
-    public async Task<Models.Catch> InsertAsync(Models.Catch c)
-    {
-        var inserted = await _client.From<CatchEntity>().Insert(Map(c));
-        return Map(inserted.Models.First());
+            return res.Models.Select(Map).ToList();
+        }
+
+        public async Task<Models.Catch> InsertAsync(Models.Catch c)
+        {
+            var inserted = await _client.From<CatchEntity>().Insert(Map(c));
+            return Map(inserted.Models.First());
+        }
     }
 }

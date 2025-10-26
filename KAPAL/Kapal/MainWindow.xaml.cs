@@ -9,13 +9,13 @@ namespace Kapal
 {
     public class AppState
     {
-        public Supabase.Client Client { get; set; }
-        public VesselRepository VesselRepo { get; set; }
-        public LandingRepository LandingRepo { get; set; }
-        public CatchRepository CatchRepo { get; set; }
+        public Supabase.Client Client { get; set; } = null!;
+        public VesselRepository VesselRepo { get; set; } = null!;
+        public LandingRepository LandingRepo { get; set; } = null!;
+        public CatchRepository CatchRepo { get; set; } = null!;
 
-        public Vessel SelectedVessel { get; set; }
-        public Landing SelectedLanding { get; set; }
+        public Vessel? SelectedVessel { get; set; }
+        public Landing? SelectedLanding { get; set; }
     }
 
     public partial class MainWindow : Window
