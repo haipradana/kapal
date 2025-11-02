@@ -11,7 +11,7 @@ public static class SupabaseService
     {
         if (_client is null)
         {
-            // load .env (jika belum pernah di-load)
+            // load .env
             DotEnv.Load(options: new DotEnvOptions(envFilePaths: new[] { ".env" }, probeForEnv: true));
 
             var url = Environment.GetEnvironmentVariable("SUPABASE_URL")

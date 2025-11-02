@@ -7,15 +7,25 @@ using System.Windows.Controls;
 
 namespace Kapal
 {
+    /// <summary>
+    /// AppState dengan polymorphism - menggunakan interface IRepository
+    /// </summary>
     public class AppState
     {
         public Supabase.Client Client { get; set; } = null!;
-        public VesselRepository VesselRepo { get; set; } = null!;
-        public LandingRepository LandingRepo { get; set; } = null!;
-        public CatchRepository CatchRepo { get; set; } = null!;
+     
+      // Menggunakan interface untuk polymorphism
+        public IRepository<Vessel> VesselRepo { get; set; } = null!;
+        public IRepository<Landing> LandingRepo { get; set; } = null!;
+        public IRepository<Catch> CatchRepo { get; set; } = null!;
 
-        public Vessel? SelectedVessel { get; set; }
-        public Landing? SelectedLanding { get; set; }
+ // Untuk akses method spesifik yang tidak ada di interface
+   public VesselRepository VesselRepoImpl => (VesselRepository)VesselRepo;
+    public LandingRepository LandingRepoImpl => (LandingRepository)LandingRepo;
+        public CatchRepository CatchRepoImpl => (CatchRepository)CatchRepo;
+
+   public Vessel? SelectedVessel { get; set; }
+ public Landing? SelectedLanding { get; set; }
     }
 
     public partial class MainWindow : Window

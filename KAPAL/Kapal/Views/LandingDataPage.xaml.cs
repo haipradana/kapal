@@ -8,47 +8,52 @@ using System.Windows.Controls;
 
 namespace Kapal.Views
 {
-    public partial class LandingDataPage : Page
+    /// <summary>
+    /// LandingDataPage menggunakan polymorphism melalui IRepository interface
+    /// </summary>
+ public partial class LandingDataPage : Page
     {
-        private readonly AppState _state;
+    private readonly AppState _state;
+  private List<LandingWithVessel> _landingsWithVessel = new();
 
         public LandingDataPage(AppState state)
-{
-       InitializeComponent();
-  _state = state;
-  Loaded += async (_, __) => await LoadAsync();
-        }
-
-        private async Task LoadAsync()
         {
-   try
-      {
-var landings = await _state.LandingRepo.GetAllAsync() ?? new List<Landing>();
-    var vessels = await _state.VesselRepo.GetAllAsync() ?? new List<Vessel>();
-
-   // Join landing with vessel
-    var landingsWithVessel = landings.Select(l =>
-         {
-   var vessel = vessels.FirstOrDefault(v => v.VesselId == l.VesselId);
-     return new LandingWithVessel
-       {
-    LandingId = l.LandingId,
-      VesselId = l.VesselId,
-VesselName = vessel?.Name ?? "Unknown",
-  LandedAt = l.LandedAt,
-    Notes = l.Notes
-};
-        }).ToList();
-
-      dgLandings.ItemsSource = landingsWithVessel;
+            InitializeComponent();
+     _state = state;
+       Loaded += async (_, __) => await LoadAsync();
       }
-  catch (Exception ex)
-   {
-    MessageBox.Show($"Error loading landings: {ex.Message}", "Error", 
-  MessageBoxButton.OK, MessageBoxImage.Error);
-    }
+
+      private async Task LoadAsync()
+     {
+   try
+     {
+      // Menggunakan polymorphism - IRepository interface
+  var landings = await _state.LandingRepo.GetAllAsync() ?? new List<Landing>();
+      var vessels = await _state.VesselRepo.GetAllAsync() ?? new List<Vessel>();
+
+       // Join landing with vessel
+     _landingsWithVessel = landings.Select(l =>
+         {
+        var vessel = vessels.FirstOrDefault(v => v.VesselId == l.VesselId);
+ return new LandingWithVessel
+      {
+        LandingId = l.LandingId,
+        VesselId = l.VesselId,
+  VesselName = vessel?.Name ?? "Unknown",
+        LandedAt = l.LandedAt,
+  Notes = l.Notes
+     };
+      }).ToList();
+
+      dgLandings.ItemsSource = _landingsWithVessel;
+            }
+       catch (Exception ex)
+            {
+   MessageBox.Show($"Error loading landings: {ex.Message}", "Error",
+        MessageBoxButton.OK, MessageBoxImage.Error);
+       }
         }
 
-   private async void BtnRefresh_Click(object sender, RoutedEventArgs e) => await LoadAsync();
-    }
+  private async void BtnRefresh_Click(object sender, RoutedEventArgs e) => await LoadAsync();
+  }
 }

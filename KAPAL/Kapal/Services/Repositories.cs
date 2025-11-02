@@ -8,18 +8,20 @@ using Kapal.Entities;
 using Kapal.Models;
 
 using Supabase;
-using SupabasePostgrest = Supabase.Postgrest; // optional, kalau mau dipakai
+using SupabasePostgrest = Supabase.Postgrest;
 using SupabaseClient = Supabase.Client;
-using static Supabase.Postgrest.Constants;     // untuk Ordering, Operator
+using static Supabase.Postgrest.Constants;
 
 namespace Kapal.Services
 {
-    public class VesselRepository
-    {
-        private readonly SupabaseClient _client;
-        public VesselRepository(SupabaseClient client) => _client = client;
 
-        private static Vessel Map(VesselEntity e) => new()
+    /// VesselRepository dengan inheritance dari BaseRepository
+
+    public class VesselRepository : BaseRepository<VesselEntity, Vessel>
+    {
+        public VesselRepository(SupabaseClient client) : base(client) { }
+
+        protected override Vessel MapEntityToModel(VesselEntity e) => new()
         {
             VesselId = e.VesselId,
             Name = e.Name,
@@ -28,7 +30,7 @@ namespace Kapal.Services
             Gear = e.Gear ?? ""
         };
 
-        private static VesselEntity Map(Vessel d) => new()
+        protected override VesselEntity MapModelToEntity(Vessel d) => new()
         {
             VesselId = d.VesselId,
             Name = d.Name,
@@ -37,125 +39,138 @@ namespace Kapal.Services
             Gear = string.IsNullOrWhiteSpace(d.Gear) ? null : d.Gear
         };
 
-        public async Task<List<Vessel>> GetAllAsync()
+        public override async Task<List<Vessel>> GetAllAsync()
         {
             var res = await _client
                 .From<VesselEntity>()
                 .Order(v => v.VesselId, Ordering.Ascending)
                 .Get();
 
-            return res.Models.Select(Map).ToList();
+            return res.Models.Select(MapEntityToModel).ToList();
         }
 
-        public async Task<Vessel> InsertAsync(Vessel vessel)
+        public override async Task<Vessel> InsertAsync(Vessel vessel)
         {
-            var inserted = await _client.From<VesselEntity>().Insert(Map(vessel));
-            return Map(inserted.Models.First());
+            var inserted = await _client.From<VesselEntity>().Insert(MapModelToEntity(vessel));
+            return MapEntityToModel(inserted.Models.First());
         }
 
-        public async Task UpdateAsync(Vessel vessel) =>
-            await _client.From<VesselEntity>().Update(Map(vessel));
+        public override async Task UpdateAsync(Vessel vessel) =>
+            await _client.From<VesselEntity>().Update(MapModelToEntity(vessel));
 
-        public async Task DeleteAsync(int vesselId) =>
-            await _client.From<VesselEntity>().Where(v => v.VesselId == vesselId).Delete();
+        public override async Task DeleteAsync(int vesselId) =>
+     await _client.From<VesselEntity>().Where(v => v.VesselId == vesselId).Delete();
     }
 
-    public class LandingRepository
+   
+    /// LandingRepository dengan inheritance dari BaseRepository
+    
+    public class LandingRepository : BaseRepository<LandingEntity, Landing>
     {
-        private readonly SupabaseClient _client;
-        public LandingRepository(SupabaseClient client) => _client = client;
+        public LandingRepository(SupabaseClient client) : base(client) { }
 
-        private static Landing Map(LandingEntity e) => new()
-        {
-            LandingId = e.LandingId,
-            VesselId = e.VesselId,
+        protected override Landing MapEntityToModel(LandingEntity e) => new()
+    {
+       LandingId = e.LandingId,
+          VesselId = e.VesselId,
             LandedAt = e.LandedAt,
-            Notes = e.Notes ?? ""
-        };
+Notes = e.Notes ?? ""
+    };
 
-        private static LandingEntity Map(Landing d) => new()
+        protected override LandingEntity MapModelToEntity(Landing d) => new()
         {
             LandingId = d.LandingId,
-            VesselId = d.VesselId,
-            LandedAt = d.LandedAt,
-            Notes = string.IsNullOrWhiteSpace(d.Notes) ? null : d.Notes
-        };
+  VesselId = d.VesselId,
+        LandedAt = d.LandedAt,
+        Notes = string.IsNullOrWhiteSpace(d.Notes) ? null : d.Notes
+     };
 
-        // >>> Tambahan untuk analitik
-        public async Task<List<Landing>> GetAllAsync()
+        public override async Task<List<Landing>> GetAllAsync()
         {
-            var res = await _client
-                .From<LandingEntity>()
-                .Order(l => l.LandedAt, Ordering.Descending)
-                .Get();
+var res = await _client
+       .From<LandingEntity>()
+      .Order(l => l.LandedAt, Ordering.Descending)
+            .Get();
 
-            return res.Models.Select(Map).ToList();
+      return res.Models.Select(MapEntityToModel).ToList();
         }
 
         public async Task<List<Landing>> GetByVesselAsync(int vesselId)
-        {
-            var res = await _client
-                .From<LandingEntity>()
-                .Filter("vessel_id", Operator.Equals, vesselId)
-                .Order(l => l.LandedAt, Ordering.Descending)
-                .Get();
-
-            return res.Models.Select(Map).ToList();
-        }
-
-        public async Task<Landing> InsertAsync(Landing landing)
-        {
-            var inserted = await _client.From<LandingEntity>().Insert(Map(landing));
-            return Map(inserted.Models.First());
-        }
-    }
-
-    public class CatchRepository
     {
-        private readonly SupabaseClient _client;
-        public CatchRepository(SupabaseClient client) => _client = client;
+        var res = await _client
+     .From<LandingEntity>()
+           .Filter("vessel_id", Operator.Equals, vesselId)
+                .Order(l => l.LandedAt, Ordering.Descending)
+ .Get();
 
-        private static Models.Catch Map(CatchEntity e) => new()
+            return res.Models.Select(MapEntityToModel).ToList();
+ }
+
+      public override async Task<Landing> InsertAsync(Landing landing)
+  {
+            var inserted = await _client.From<LandingEntity>().Insert(MapModelToEntity(landing));
+            return MapEntityToModel(inserted.Models.First());
+        }
+
+        public override async Task UpdateAsync(Landing landing) =>
+            await _client.From<LandingEntity>().Update(MapModelToEntity(landing));
+
+   public override async Task DeleteAsync(int landingId) =>
+      await _client.From<LandingEntity>().Where(l => l.LandingId == landingId).Delete();
+  }
+
+    /// CatchRepository dengan inheritance dari BaseRepository
+    
+  public class CatchRepository : BaseRepository<CatchEntity, Models.Catch>
+    {
+      public CatchRepository(SupabaseClient client) : base(client) { }
+
+      protected override Models.Catch MapEntityToModel(CatchEntity e) => new()
         {
-            CatchId = e.CatchId,
+       CatchId = e.CatchId,
             LandingId = e.LandingId,
             Species = e.Species,
-            WeightKg = e.Weight     // Entity pakai 'Weight', Model pakai 'WeightKg'
+   WeightKg = e.Weight
         };
 
-        private static CatchEntity Map(Models.Catch d) => new()
+        protected override CatchEntity MapModelToEntity(Models.Catch d) => new()
         {
-            CatchId = d.CatchId,
-            LandingId = d.LandingId,
-            Species = d.Species,
-            Weight = d.WeightKg
+   CatchId = d.CatchId,
+LandingId = d.LandingId,
+        Species = d.Species,
+          Weight = d.WeightKg
         };
 
-        // >>> Tambahan untuk analitik
-        public async Task<List<Models.Catch>> GetAllAsync()
-        {
-            var res = await _client
-                .From<CatchEntity>()
-                .Select("*")
-                .Get();
+        public override async Task<List<Models.Catch>> GetAllAsync()
+  {
+  var res = await _client
+.From<CatchEntity>()
+         .Select("*")
+         .Get();
 
-            return res.Models.Select(Map).ToList();
+       return res.Models.Select(MapEntityToModel).ToList();
         }
 
         public async Task<List<Models.Catch>> GetByLandingAsync(int landingId)
-        {
+     {
             var res = await _client
-                .From<CatchEntity>()
-                .Filter("landing_id", Operator.Equals, landingId)
-                .Get();
+    .From<CatchEntity>()
+    .Filter("landing_id", Operator.Equals, landingId)
+          .Get();
 
-            return res.Models.Select(Map).ToList();
+        return res.Models.Select(MapEntityToModel).ToList();
         }
 
-        public async Task<Models.Catch> InsertAsync(Models.Catch c)
-        {
-            var inserted = await _client.From<CatchEntity>().Insert(Map(c));
-            return Map(inserted.Models.First());
-        }
+        public override async Task<Models.Catch> InsertAsync(Models.Catch c)
+      {
+         var inserted = await _client.From<CatchEntity>().Insert(MapModelToEntity(c));
+     return MapEntityToModel(inserted.Models.First());
+  }
+
+        public override async Task UpdateAsync(Models.Catch c) =>
+   await _client.From<CatchEntity>().Update(MapModelToEntity(c));
+
+ public override async Task DeleteAsync(int catchId) =>
+      await _client.From<CatchEntity>().Where(c => c.CatchId == catchId).Delete();
     }
 }
