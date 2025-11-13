@@ -5,8 +5,8 @@
         Title="KAPAL - Katalog Pelabuhan" Height="800" Width="1400"
         WindowStartupLocation="CenterScreen">
     <Grid>
-        <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="260"/>
+      <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Name="SidebarColumn" Width="260"/>
   <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 

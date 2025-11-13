@@ -13,85 +13,115 @@ namespace Kapal.Views
     public partial class VesselDataPage : Page
     {
         private readonly AppState _state;
-  private List<Vessel> _all = new();
+        private List<Vessel> _all = new();
 
         public VesselDataPage(AppState state)
- {
-        InitializeComponent();
-   _state = state;
-       Loaded += async (_, __) => await LoadAsync();
+        {
+            InitializeComponent();
+            _state = state;
+            Loaded += async (_, __) => await LoadAsync();
         }
 
         private async Task LoadAsync()
         {
-    try
-       {
-            // Menggunakan polymorphism - IRepository interface
-         _all = await _state.VesselRepo.GetAllAsync() ?? new List<Vessel>();
-         dgVessels.ItemsSource = _all;
-     _state.SelectedVessel = null;
-                UpdateButtonStates();
-            }
-    catch (Exception ex)
+            try
             {
- MessageBox.Show($"Error loading vessels: {ex.Message}", "Error",
-  MessageBoxButton.OK, MessageBoxImage.Error);
-   }
+                // Menggunakan polymorphism - IRepository interface
+                _all = await _state.VesselRepo.GetAllAsync() ?? new List<Vessel>();
+                dgVessels.ItemsSource = _all;
+                _state.SelectedVessel = null;
+                UpdateButtonStates();
+
+                // Disable CRUD buttons for guest
+                ApplyRoleBasedUI();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading vessels: {ex.Message}", "Error",
+      MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ApplyRoleBasedUI()
+        {
+            if (!_state.IsAdmin)
+            {
+                // Find Add button from XAML
+                var addButton = FindName("btnAdd") as Button;
+                if (addButton != null)
+                {
+                    addButton.IsEnabled = false;
+                    addButton.Opacity = 0.5;
+                }
+
+                btnEdit.IsEnabled = false;
+                btnEdit.Opacity = 0.5;
+                btnDelete.IsEnabled = false;
+                btnDelete.Opacity = 0.5;
+            }
         }
 
         private void DgVessels_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-  _state.SelectedVessel = dgVessels.SelectedItem as Vessel;
- UpdateButtonStates();
-  }
+            _state.SelectedVessel = dgVessels.SelectedItem as Vessel;
+            UpdateButtonStates();
+        }
 
-private void UpdateButtonStates()
-   {
- bool hasSelection = _state.SelectedVessel != null;
-  btnEdit.IsEnabled = hasSelection;
- btnDelete.IsEnabled = hasSelection;
-      }
+        private void UpdateButtonStates()
+        {
+            bool hasSelection = _state.SelectedVessel != null;
+
+            // Only enable if admin and has selection
+            if (_state.IsAdmin)
+            {
+                btnEdit.IsEnabled = hasSelection;
+                btnDelete.IsEnabled = hasSelection;
+            }
+        }
 
         private void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
-     var frame = Application.Current.MainWindow.FindName("RootFrame") as Frame;
-       frame?.Navigate(new AddVesselPage(_state));
+            if (!_state.IsAdmin) return;
+
+            var frame = Application.Current.MainWindow.FindName("RootFrame") as Frame;
+            frame?.Navigate(new AddVesselPage(_state));
         }
 
-   private void BtnEdit_Click(object sender, RoutedEventArgs e)
-     {
-            if (_state.SelectedVessel == null) return;
-       // TODO: Implement edit vessel dialog
-   MessageBox.Show($"Edit Vessel: {_state.SelectedVessel.Name}\nTo be implemented", "Info",
+        private void BtnEdit_Click(object sender, RoutedEventArgs e)
+        {
+            if (!_state.IsAdmin || _state.SelectedVessel == null) return;
+
+            // TODO: Implement edit vessel dialog
+            MessageBox.Show($"Edit Vessel: {_state.SelectedVessel.Name}\nTo be implemented", "Info",
     MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private async void BtnDelete_Click(object sender, RoutedEventArgs e)
- {
-       if (_state.SelectedVessel == null) return;
+        {
+            if (!_state.IsAdmin || _state.SelectedVessel == null) return;
 
-     var result = MessageBox.Show(
-           $"Are you sure you want to delete vessel '{_state.SelectedVessel.Name}'?",
-      "Confirm Delete",
+            var result = MessageBox.Show(
+          $"Are you sure you want to delete vessel '{_state.SelectedVessel.Name}'?",
+                "Confirm Delete",
       MessageBoxButton.YesNo,
-        MessageBoxImage.Warning);
+       MessageBoxImage.Warning);
 
-     if (result == MessageBoxResult.Yes)
-   {
-  try
-      {
- // Menggunakan polymorphism - DeleteAsync dari IRepository
-  await _state.VesselRepo.DeleteAsync(_state.SelectedVessel.VesselId);
-    MessageBox.Show("Vessel deleted successfully!", "Success",
-  MessageBoxButton.OK, MessageBoxImage.Information);
-     await LoadAsync();
-    }
-      catch (Exception ex)
-         {
-           MessageBox.Show($"Error deleting vessel: {ex.Message}", "Error",
-       MessageBoxButton.OK, MessageBoxImage.Error);
-  }
-          }
+            if (result == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    // Menggunakan polymorphism - DeleteAsync dari IRepository
+                    await _state.VesselRepo.DeleteAsync(_state.SelectedVessel.VesselId);
+                    MessageBox.Show("Vessel deleted successfully!", "Success",
+   MessageBoxButton.OK, MessageBoxImage.Information);
+                    await LoadAsync();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error deleting vessel: {ex.Message}", "Error",
+              MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
     }
 }

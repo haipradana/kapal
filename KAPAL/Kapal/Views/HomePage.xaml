@@ -86,7 +86,7 @@
 
                 <!-- Actions -->
                 <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button Content="Add Vessel" Width="130" Height="34" Click="BtnAddVessel_Click"/>
+                    <Button x:Name="btnAddVessel" Content="Add Vessel" Width="130" Height="34" Click="BtnAddVessel_Click"/>
                     <Button x:Name="btnAddLanding" Content="Add Landing" Width="130" Height="34" Margin="8 0 0 0"
                             IsEnabled="False" Click="BtnAddLanding_Click"/>
                     <Button x:Name="btnAddCatch" Content="Add Catch" Width="130" Height="34" Margin="8 0 0 0"

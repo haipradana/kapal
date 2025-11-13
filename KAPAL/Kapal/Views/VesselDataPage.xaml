@@ -16,14 +16,14 @@
      <Border CornerRadius="12" Background="White" Padding="24" BorderBrush="#E2E8F0" BorderThickness="1">
   <StackPanel>
        <DockPanel Margin="0,0,0,16">
-  <Button Click="BtnAdd_Click" DockPanel.Dock="Right" Style="{StaticResource PrimaryButtonStyle}">
-         <StackPanel Orientation="Horizontal">
-        <materialDesign:PackIcon Kind="Plus" Width="18" Height="18" Margin="0,0,8,0"/>
-           <TextBlock Text="Add Vessel" VerticalAlignment="Center"/>
-        </StackPanel>
-   </Button>
- <TextBlock Text="Vessel List" FontSize="18" FontWeight="SemiBold" Foreground="#1E293B" VerticalAlignment="Center"/>
-        </DockPanel>
+          <Button x:Name="btnAdd" Click="BtnAdd_Click" DockPanel.Dock="Right" Style="{StaticResource PrimaryButtonStyle}">
+     <StackPanel Orientation="Horizontal">
+      <materialDesign:PackIcon Kind="Plus" Width="18" Height="18" Margin="0,0,8,0"/>
+ <TextBlock Text="Add Vessel" VerticalAlignment="Center"/>
+       </StackPanel>
+      </Button>
+          <TextBlock Text="Vessel List" FontSize="18" FontWeight="SemiBold" Foreground="#1E293B" VerticalAlignment="Center"/>
+     </DockPanel>
 
     <!-- DataGrid -->
      <DataGrid x:Name="dgVessels" Height="500" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False"

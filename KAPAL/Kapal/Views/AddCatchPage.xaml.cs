@@ -23,11 +23,12 @@ namespace Kapal.Views
             Loaded += (_, __) =>
             {
                 lblLanding.Text = _state.SelectedLanding != null
-                    ? $"Landing: {_state.SelectedLanding.LandingId} (Vessel {_state.SelectedVessel?.Name})"
+                    ? $"Landing #{_state.SelectedLanding.LandingId} - Vessel: {_state.SelectedVessel?.Name}"
                     : "Landing: (belum dipilih)";
 
                 dgSpecies.ItemsSource = _rows;
                 Renumber();
+                UpdateSpeciesCount();
             };
         }
 
@@ -42,8 +43,22 @@ namespace Kapal.Views
 
         private void BtnClear_Click(object sender, RoutedEventArgs e)
         {
-            _rows.Clear();
-            Renumber();
+            if (_rows.Count == 0)
+            {
+                MessageBox.Show("Tidak ada data untuk dihapus.", "Info",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var result = MessageBox.Show("Apakah Anda yakin ingin menghapus semua data species?",
+                "Konfirmasi", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                _rows.Clear();
+                Renumber();
+                UpdateSpeciesCount();
+            }
         }
 
         private void BtnRemoveRow_Click(object sender, RoutedEventArgs e)
@@ -52,6 +67,7 @@ namespace Kapal.Views
             {
                 _rows.Remove(row);
                 Renumber();
+                UpdateSpeciesCount();
             }
         }
 
@@ -63,18 +79,21 @@ namespace Kapal.Views
 
             if (string.IsNullOrWhiteSpace(species) || string.IsNullOrWhiteSpace(weightText))
             {
-                MessageBox.Show("Isi Species dan Weight (kg).");
+                MessageBox.Show("Species name dan Weight (kg) harus diisi.", "Validasi",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
             if (!decimal.TryParse(weightText, NumberStyles.Number, CultureInfo.InvariantCulture, out var w) || w <= 0)
             {
-                MessageBox.Show("Weight (kg) tidak valid.");
+                MessageBox.Show("Weight (kg) harus berupa angka positif.", "Validasi",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
             _rows.Add(new CatchRow { Species = species, WeightKg = w });
             Renumber();
+            UpdateSpeciesCount();
 
             // reset field agar cepat input banyak
             tbSpecies.Clear();
@@ -86,13 +105,15 @@ namespace Kapal.Views
         {
             if (_state.SelectedLanding == null)
             {
-                MessageBox.Show("Tambah Landing dulu.");
+                MessageBox.Show("Silakan pilih landing terlebih dahulu.", "Info",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
             if (_rows.Count == 0)
             {
-                MessageBox.Show("Belum ada species yang ditambahkan.");
+                MessageBox.Show("Belum ada species yang ditambahkan.", "Info",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -110,9 +131,11 @@ namespace Kapal.Views
                     await _state.CatchRepo.InsertAsync(model);
                 }
 
-                MessageBox.Show("Semua catch tersimpan.");
+                MessageBox.Show($"{_rows.Count} catch data berhasil disimpan!", "Sukses",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
                 _rows.Clear();
                 Renumber();
+                UpdateSpeciesCount();
 
                 // balik ke Home
                 var frame = Application.Current.MainWindow.FindName("RootFrame") as Frame;
@@ -120,7 +143,8 @@ namespace Kapal.Views
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Gagal simpan catch: {ex.Message}");
+                MessageBox.Show($"Gagal menyimpan catch data: {ex.Message}", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -129,6 +153,18 @@ namespace Kapal.Views
             int i = 1;
             foreach (var r in _rows) r.No = i++;
             dgSpecies.Items.Refresh();
+        }
+
+        private void UpdateSpeciesCount()
+        {
+            txtTotalSpecies.Text = _rows.Count == 0
+                ? "(no species)"
+                : $"({_rows.Count} species)";
+        }
+
+        private void dgSpecies_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 
