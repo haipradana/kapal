@@ -372,4 +372,3 @@ namespace Kapal.Views
         }
     }
 }
-admin
